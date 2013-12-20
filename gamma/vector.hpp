@@ -1,9 +1,14 @@
 /* Copyright © 2013 Fabian Schuiki */
 #pragma once
-#include <cmath>
+#include <stdint.h>
 #define GAMMA_HAS_VECTOR
 
 namespace gamma {
+
+// Include the math library into the gamma namespace to avoid name conflicts.
+extern "C" {
+#include <math.h>
+}
 
 /// Two-dimensional vector.
 template<typename T> struct vector2
@@ -17,9 +22,13 @@ template<typename T> struct vector2
 	};
 	
 	vector2() : x(0), y(0) {}
-	vector2(T h) : x(h), y(h) {}
-	vector2(T x, T y) : x(x), y(y) {}
-	template<typename R> vector2(const vector2<R>& h) : x(h.x), y(h.y) {}
+	explicit vector2(T h) : x(h), y(h) {}
+	explicit vector2(T x, T y) : x(x), y(y) {}
+	template<typename R> explicit vector2(const vector2<R>& h) : x(h.x), y(h.y) {}
+
+	template<typename R> operator vector2<R>() const { return vector2<R>(*this); }
+	T& operator() (int index) { return v[index]; }
+	T operator() (int index) const { return v[index]; }
 	
 	self operator- () const { return self(-x, -y); }
 	template<typename R> self& operator= (const vector2<R>& h) { x=h.x; y=h.y; return *this; }
