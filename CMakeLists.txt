@@ -7,3 +7,5 @@ include_directories(.)
 add_executable(vector tests/vector.cpp)
 add_executable(sizes tests/sizes.cpp)
 add_executable(matrix tests/matrix.cpp)
+
+install(DIRECTORY gamma/ DESTINATION include/gamma)
