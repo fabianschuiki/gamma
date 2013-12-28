@@ -77,8 +77,8 @@ template<typename T> struct vector3
 	vector3() : x(0), y(0), z(0) {}
 	explicit vector3(T h) : x(h), y(h), z(h) {}
 	explicit vector3(T x, T y, T z) : x(x), y(y), z(z) {}
-	template<typename R> vector3(const vector3<R>& h) : x(h.x), y(h.y), z(h.z) {}
-	template<typename R> vector3(const vector2<R>& h, T z) : x(h.x), y(h.y), z(z) {}
+	template<typename R> explicit vector3(const vector3<R>& h) : x(h.x), y(h.y), z(h.z) {}
+	template<typename R> explicit vector3(const vector2<R>& h, T z) : x(h.x), y(h.y), z(z) {}
 
 	template<typename R> operator vector3<R>() const { return vector3<R>(*this); }
 	operator T*() const { return (T*)this; }
@@ -139,9 +139,9 @@ template<typename T> struct vector4
 	vector4() : x(0), y(0), z(0), w(0) {}
 	explicit vector4(T h) : x(h), y(h), z(h), w(h) {}
 	explicit vector4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
-	template<typename R> vector4(const vector4<R>& h) : x(h.x), y(h.y), z(h.z), w(h.w) {}
-	template<typename R> vector4(const vector3<R>& h, T w) : x(h.x), y(h.y), z(h.z), w(w) {}
-	template<typename R> vector4(const vector2<R>& h, T z, T w) : x(h.x), y(h.y), z(z), w(w) {}
+	template<typename R> explicit vector4(const vector4<R>& h) : x(h.x), y(h.y), z(h.z), w(h.w) {}
+	template<typename R> explicit vector4(const vector3<R>& h, T w) : x(h.x), y(h.y), z(h.z), w(w) {}
+	template<typename R> explicit vector4(const vector2<R>& h, T z, T w) : x(h.x), y(h.y), z(z), w(w) {}
 
 	template<typename R> operator vector4<R>() const { return vector4<R>(*this); }
 	operator T*() const { return (T*)this; }
