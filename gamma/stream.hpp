@@ -19,4 +19,8 @@ template<typename T> std::ostream& operator<< (std::ostream& o, const sphere<T>&
 template<typename T> std::ostream& operator<< (std::ostream& o, const line<T>& l) { o << '(' << s.p << ", " << s.d << ')'; return o; }
 #endif
 
+#ifdef GAMMA_HAS_FIXED_POINT
+template<typename S, int T> std::ostream& operator<< (std::ostream& o, const fixed_point<S,T>& f) { o << (double)f.v / f.factor; return o; }
+#endif
+
 } // namespace gamma
