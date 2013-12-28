@@ -17,16 +17,15 @@ template<typename T, int P> struct fixed_point
 	typedef T value_type;
 
 	const static int precision = P;
-	const static T factor = 1 << P;
-	const static T decimal_mask = (1 << P) - 1;
-	const static T integer_mask = ((T)-1) & ~decimal_mask;
+	const static T factor = ((T)1) << P;
+	const static T decimal_mask = factor - 1;
 
 	T v;
 
 	fixed_point() {}
-	template<typename R> explicit fixed_point(R r, int f = 1) : v(r * factor / f) {}
+	template<typename R> fixed_point(R r, int f = 1) : v(r * factor / f) {}
 	fixed_point(const self& f) : v(f.v) {}
-	template<typename R, int S> explicit fixed_point(const fixed_point<R,S>& f) : v(f.v * factor / f.factor) {}
+	template<typename R, int S> fixed_point(const fixed_point<R,S>& f) : v(f.v * factor / f.factor) {}
 
 	self operator- () const { return self(-v, factor); }
 	template<typename R> self& operator= (R r) { v = r * factor; return *this; }
