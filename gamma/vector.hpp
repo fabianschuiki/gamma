@@ -11,10 +11,7 @@ template<typename T> struct vector2
 	typedef T type;
 	typedef vector2<T> self;
 
-	union {
-		struct { T x, y; };
-		T v[2];
-	};
+	T x, y;
 
 	vector2() : x(0), y(0) {}
 	explicit vector2(T h) : x(h), y(h) {}
@@ -22,8 +19,9 @@ template<typename T> struct vector2
 	template<typename R> explicit vector2(const vector2<R>& h) : x(h.x), y(h.y) {}
 
 	template<typename R> operator vector2<R>() const { return vector2<R>(*this); }
-	T& operator() (int index) { return v[index]; }
-	T operator() (int index) const { return v[index]; }
+	operator T*() const { return (T*)this; }
+	T& operator() (int index) { return ((T*)this)[index]; }
+	T operator() (int index) const { return ((T*)this)[index]; }
 
 	self operator- () const { return self(-x, -y); }
 	template<typename R> self& operator= (const vector2<R>& h) { x=h.x; y=h.y; return *this; }
@@ -74,16 +72,18 @@ template<typename T> struct vector3
 	typedef T type;
 	typedef vector3<T> self;
 
-	union {
-		struct { T x, y, z; };
-		T v[3];
-	};
+	T x, y, z;
 
 	vector3() : x(0), y(0), z(0) {}
-	vector3(T h) : x(h), y(h), z(h) {}
-	vector3(T x, T y, T z) : x(x), y(y), z(z) {}
+	explicit vector3(T h) : x(h), y(h), z(h) {}
+	explicit vector3(T x, T y, T z) : x(x), y(y), z(z) {}
 	template<typename R> vector3(const vector3<R>& h) : x(h.x), y(h.y), z(h.z) {}
 	template<typename R> vector3(const vector2<R>& h, T z) : x(h.x), y(h.y), z(z) {}
+
+	template<typename R> operator vector3<R>() const { return vector3<R>(*this); }
+	operator T*() const { return (T*)this; }
+	T& operator() (int index) { return ((T*)this)[index]; }
+	T operator() (int index) const { return ((T*)this)[index]; }
 
 	self operator- () const { return self(-x, -y, -z); }
 	template<typename R> self& operator= (const vector3<R>& h) { x=h.x; y=h.y; z=h.z; return *this; }
@@ -134,17 +134,19 @@ template<typename T> struct vector4
 	typedef T type;
 	typedef vector4<T> self;
 
-	union {
-		struct { T x, y, z, w; };
-		T v[4];
-	};
+	T x, y, z, w;
 
 	vector4() : x(0), y(0), z(0), w(0) {}
-	vector4(T h) : x(h), y(h), z(h), w(h) {}
-	vector4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
+	explicit vector4(T h) : x(h), y(h), z(h), w(h) {}
+	explicit vector4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
 	template<typename R> vector4(const vector4<R>& h) : x(h.x), y(h.y), z(h.z), w(h.w) {}
 	template<typename R> vector4(const vector3<R>& h, T w) : x(h.x), y(h.y), z(h.z), w(w) {}
 	template<typename R> vector4(const vector2<R>& h, T z, T w) : x(h.x), y(h.y), z(z), w(w) {}
+
+	template<typename R> operator vector4<R>() const { return vector4<R>(*this); }
+	operator T*() const { return (T*)this; }
+	T& operator() (int index) { return ((T*)this)[index]; }
+	T operator() (int index) const { return ((T*)this)[index]; }
 
 	self operator- () const { return self(-x, -y, -z, -w); }
 	template<typename R> self& operator= (const vector4<R>& h) { x=h.x; y=h.y; z=h.z; w=h.w; return *this; }
