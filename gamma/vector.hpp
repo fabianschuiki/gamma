@@ -1,14 +1,9 @@
 /* Copyright © 2013 Fabian Schuiki */
 #pragma once
-#include <stdint.h>
+#include "math.hpp"
 #define GAMMA_HAS_VECTOR
 
 namespace gamma {
-
-// Include the math library into the gamma namespace to avoid name conflicts.
-extern "C" {
-#include <math.h>
-}
 
 /// Two-dimensional vector.
 template<typename T> struct vector2
@@ -20,7 +15,7 @@ template<typename T> struct vector2
 		struct { T x, y; };
 		T v[2];
 	};
-	
+
 	vector2() : x(0), y(0) {}
 	explicit vector2(T h) : x(h), y(h) {}
 	explicit vector2(T x, T y) : x(x), y(y) {}
@@ -29,11 +24,11 @@ template<typename T> struct vector2
 	template<typename R> operator vector2<R>() const { return vector2<R>(*this); }
 	T& operator() (int index) { return v[index]; }
 	T operator() (int index) const { return v[index]; }
-	
+
 	self operator- () const { return self(-x, -y); }
 	template<typename R> self& operator= (const vector2<R>& h) { x=h.x; y=h.y; return *this; }
 	template<typename R> self& operator= (R h) { x=h; y=h; return *this; }
-	
+
 	template<typename R> self mul(const vector2<R>& h) const { return self(x*h.x, y*h.y); }
 	template<typename R> self div(const vector2<R>& h) const { return self(x/h.x, y/h.y); }
 
@@ -46,14 +41,14 @@ template<typename T> struct vector2
 	template<typename R> self& operator-= (R h)	{ x-=h; y-=h; return *this; }
 	template<typename R> self& operator*= (R h)	{ x*=h; y*=h; return *this; }
 	template<typename R> self& operator/= (R h)	{ x/=h; y/=h; return *this; }
-	
+
 	T length2() const { return dot(*this); }
 	float lengthf() const { return sqrtf(length2()); }
 	double length() const { return sqrt(length2()); }
 
 	template<typename R> T dot(const R& h) const { return x*h.x + y*h.y; }
 	template<typename R> self ortho() const { return self(y, -x); }
-	
+
 	self& normalize() { T l = length(); return *this /= l; }
 	self normalized() const { T l = length(); return *this / l; }
 };
@@ -83,17 +78,17 @@ template<typename T> struct vector3
 		struct { T x, y, z; };
 		T v[3];
 	};
-	
+
 	vector3() : x(0), y(0), z(0) {}
 	vector3(T h) : x(h), y(h), z(h) {}
 	vector3(T x, T y, T z) : x(x), y(y), z(z) {}
 	template<typename R> vector3(const vector3<R>& h) : x(h.x), y(h.y), z(h.z) {}
 	template<typename R> vector3(const vector2<R>& h, T z) : x(h.x), y(h.y), z(z) {}
-	
+
 	self operator- () const { return self(-x, -y, -z); }
 	template<typename R> self& operator= (const vector3<R>& h) { x=h.x; y=h.y; z=h.z; return *this; }
 	template<typename R> self& operator= (R h) { x=h; y=h; z=h; return *this; }
-	
+
 	template<typename R> self mul(const vector3<R>& h) const { return self(x*h.x, y*h.y, z*h.z); }
 	template<typename R> self div(const vector3<R>& h) const { return self(x/h.x, y/h.y, z/h.z); }
 
@@ -106,14 +101,14 @@ template<typename T> struct vector3
 	template<typename R> self& operator-= (R h)	{ x-=h; y-=h; z-=h; return *this; }
 	template<typename R> self& operator*= (R h)	{ x*=h; y*=h; z*=h; return *this; }
 	template<typename R> self& operator/= (R h)	{ x/=h; y/=h; z/=h; return *this; }
-	
+
 	T length2() const { return dot(*this); }
 	float lengthf() const { return sqrtf(length2()); }
 	double length() const { return sqrt(length2()); }
 
 	template<typename R> T dot(const R& h) const { return x*h.x + y*h.y + z*h.z; }
 	template<typename R> self cross(const R& h) const { return self(y*h.z - z*h.y, z*h.x - x*h.z, x*h.y - y*h.x); }
-	
+
 	self& normalize() { T l = length(); return *this /= l; }
 	self normalized() const { T l = length(); return *this / l; }
 };
@@ -143,18 +138,18 @@ template<typename T> struct vector4
 		struct { T x, y, z, w; };
 		T v[4];
 	};
-	
+
 	vector4() : x(0), y(0), z(0), w(0) {}
 	vector4(T h) : x(h), y(h), z(h), w(h) {}
 	vector4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
 	template<typename R> vector4(const vector4<R>& h) : x(h.x), y(h.y), z(h.z), w(h.w) {}
 	template<typename R> vector4(const vector3<R>& h, T w) : x(h.x), y(h.y), z(h.z), w(w) {}
 	template<typename R> vector4(const vector2<R>& h, T z, T w) : x(h.x), y(h.y), z(z), w(w) {}
-	
+
 	self operator- () const { return self(-x, -y, -z, -w); }
 	template<typename R> self& operator= (const vector4<R>& h) { x=h.x; y=h.y; z=h.z; w=h.w; return *this; }
 	template<typename R> self& operator= (R h) { x=h; y=h; z=h; w=h; return *this; }
-	
+
 	template<typename R> self mul(const vector4<R>& h) const { return self(x*h.x, y*h.y, z*h.z, w*h.w); }
 	template<typename R> self div(const vector4<R>& h) const { return self(x/h.x, y/h.y, z/h.z, w/h.w); }
 
@@ -167,13 +162,13 @@ template<typename T> struct vector4
 	template<typename R> self& operator-= (R h)	{ x-=h; y-=h; z-=h; w-=h; return *this; }
 	template<typename R> self& operator*= (R h)	{ x*=h; y*=h; z*=h; w*=h; return *this; }
 	template<typename R> self& operator/= (R h)	{ x/=h; y/=h; z/=h; w/=h; return *this; }
-	
+
 	T length2() const { return dot(*this); }
 	float lengthf() const { return sqrtf(length2()); }
 	double length() const { return sqrt(length2()); }
 
 	template<typename R> T dot(const R& h) const { return x*h.x + y*h.y + z*h.z + w*h.w; }
-	
+
 	self& normalize() { T l = length(); return *this /= l; }
 	self normalized() const { T l = length(); return *this / l; }
 };
