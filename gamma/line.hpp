@@ -30,7 +30,7 @@ namespace convenience {
 	typedef line<vector2f> line2f;
 	typedef line<vector3f> line3f;
 	typedef line<vector4f> line4f;
-	
+
 	typedef line<vector2d> line2d;
 	typedef line<vector3d> line3d;
 	typedef line<vector4d> line4d;
