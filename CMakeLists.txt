@@ -1,11 +1,16 @@
 cmake_minimum_required(VERSION 2.8)
 project(gamma)
 
-set(CMAKE_BUILD_TYPE Debug)
-
-include_directories(.)
-add_executable(vector tests/vector.cpp)
-add_executable(sizes tests/sizes.cpp)
-add_executable(matrix tests/matrix.cpp)
-
 install(DIRECTORY gamma/ DESTINATION include/gamma)
+
+find_package(Boost COMPONENTS unit_test_framework OPTIONAL)
+if (Boost_UNIT_TEST_FRAMEWORK_FOUND)
+	include_directories(. ${Boost_INCLUDE_DIRS})
+	add_definitions(-DBOOST_TEST_DYN_LINK)
+
+	add_executable(tests tests.cpp)
+	target_link_libraries(tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+	enable_testing()
+	add_test(tests tests)
+endif()
