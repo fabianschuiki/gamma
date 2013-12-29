@@ -20,7 +20,7 @@ template<typename T> std::ostream& operator<< (std::ostream& o, const line<T>& l
 #endif
 
 #ifdef GAMMA_HAS_FIXED_POINT
-template<typename S, int T> std::ostream& operator<< (std::ostream& o, const fixed_point<S,T>& f) { o << (double)f.v / f.factor; return o; }
+template<int Ia, int Ib> std::ostream& operator<< (std::ostream& o, fixed_point<Ia,Ib> f) { o << (double)f.v / f.factor; return o; }
 #endif
 
 } // namespace gamma
