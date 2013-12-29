@@ -18,8 +18,6 @@ template<int Ia, int Da> struct fixed_point
 	const static int bits = integral_bits + decimal_bits;
 
 	typedef typename integer::signed_integer<bits>::type value_type;
-	#define expand_bits(b, thing) ((si(bits + b))(thing))
-	#define expand_bytes(b, thing) expand_bits(b*8, thing)
 
 	const static value_type factor = 1 << (value_type)decimal_bits;
 	const static value_type decimal_mask = factor - 1;
@@ -28,11 +26,11 @@ template<int Ia, int Da> struct fixed_point
 
 	fixed_point() {}
 	fixed_point(const self& f) : v(f.v) {}
-	template<typename R> explicit fixed_point(R r, int db = 0) : v(recast(sizeof(r)*8+Da, r) * factor / (1 << (int64_t)db)) {}
+	template<typename R> explicit fixed_point(R r, int db = 0) : v(r * recast(Ia+Da+Da, factor) / (1 << (int64_t)db)) {}
 	template<int Ib, int Db> explicit fixed_point(const fixed_point<Ia,Da>& f) : v(recast(Ib+Db+Da, f.v) * factor / f.factor) {}
 
-	self operator- () const { return (self){-v}; }
-	template<typename R> self& operator= (R r) { v = recast(sizeof(r)*8+Da, r) * factor; return *this; }
+	self operator- () const { self r; r.v = -v; return r; }
+	template<typename R> self& operator= (R r) { v = r * recast(Ia+Da+Da, factor); return *this; }
 	self& operator= (const self& f) { v = f.v; return *this; }
 	template<int Ib, int Db> self& operator= (const fixed_point<Ia,Da>& f) { v = recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
 
