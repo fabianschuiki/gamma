@@ -41,10 +41,10 @@ template<int Ia, int Da> struct fixed_point
 	template<typename R> self& operator*= (R r) { v *= r; return *this; }
 	template<typename R> self& operator/= (R r) { v /= r; return *this; }
 
-	template<int Ib, int Db> self& operator+= (fixed_point<Ib,Db>& f) { v += recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
-	template<int Ib, int Db> self& operator-= (fixed_point<Ib,Db>& f) { v -= recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
-	template<int Ib, int Db> self& operator*= (fixed_point<Ib,Db>& f) { v = recast(Ia+Da+Ib+Db, v) * f.v / f.factor; return *this; }
-	template<int Ib, int Db> self& operator/= (fixed_point<Ib,Db>& f) { v = recast(Ia+Da+Db, v) * f.factor / f.v; return *this; }
+	template<int Ib, int Db> self& operator+= (fixed_point<Ib,Db> f) { v += recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
+	template<int Ib, int Db> self& operator-= (fixed_point<Ib,Db> f) { v -= recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
+	template<int Ib, int Db> self& operator*= (fixed_point<Ib,Db> f) { v = recast(Ia+Da+Ib+Db, v) * f.v / f.factor; return *this; }
+	template<int Ib, int Db> self& operator/= (fixed_point<Ib,Db> f) { v = recast(Ia+Da+Db, v) * f.factor / f.v; return *this; }
 
 	template<typename R> operator R() const { return (R)v / factor; }
 	template<int Ib, int Db> operator fixed_point<Ib,Db>() const { fixed_point<Ib,Db> r; r.v = recast(Ia+Da+Db, v) * r.factor / factor; return r; }
