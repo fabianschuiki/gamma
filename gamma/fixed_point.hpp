@@ -1,99 +1,97 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
 #include "math.hpp"
+#include "integer.hpp"
 #define GAMMA_HAS_FIXED_POINT
 
 namespace gamma {
 
-/** @brief Class for fixed-point arithmetics.
- *
- * The template parameter T configures the storage type for the fixed-point
- * number. Usually one of the integer types char, short, int, long, long long.
- * Parameter P configures the precision, i.e. how many decimal bits the number
- * has. */
-template<typename T, int P> struct fixed_point
+#define recast(bits,thing) ((typename integer::signed_integer<bits>::type)(thing))
+
+/** Class for signed fixed-point arithmetics. */
+template<int Ia, int Da> struct fixed_point
 {
-	typedef fixed_point<T,P> self;
-	typedef T value_type;
+	typedef fixed_point<Ia,Da> self;
 
-	const static int precision = P;
-	const static T factor = ((T)1) << P;
-	const static T decimal_mask = factor - 1;
+	const static int integral_bits = Ia;
+	const static int decimal_bits = Da;
+	const static int bits = integral_bits + decimal_bits;
 
-	T v;
+	typedef typename integer::signed_integer<bits>::type value_type;
+	#define expand_bits(b, thing) ((si(bits + b))(thing))
+	#define expand_bytes(b, thing) expand_bits(b*8, thing)
+
+	const static value_type factor = 1 << (value_type)decimal_bits;
+	const static value_type decimal_mask = factor - 1;
+
+	value_type v;
 
 	fixed_point() {}
-	template<typename R> fixed_point(R r, int f = 1) : v(r * factor / f) {}
 	fixed_point(const self& f) : v(f.v) {}
-	template<typename R, int S> fixed_point(const fixed_point<R,S>& f) : v(f.v * factor / f.factor) {}
+	template<typename R> explicit fixed_point(R r, int db = 0) : v(recast(sizeof(r)*8+Da, r) * factor / (1 << (int64_t)db)) {}
+	template<int Ib, int Db> explicit fixed_point(const fixed_point<Ia,Da>& f) : v(recast(Ib+Db+Da, f.v) * factor / f.factor) {}
 
-	self operator- () const { return self(-v, factor); }
-	template<typename R> self& operator= (R r) { v = r * factor; return *this; }
+	self operator- () const { return (self){-v}; }
+	template<typename R> self& operator= (R r) { v = recast(sizeof(r)*8+Da, r) * factor; return *this; }
 	self& operator= (const self& f) { v = f.v; return *this; }
-	template<typename R, int S> self& operator= (const fixed_point<R,S>& f) { v = f.v * factor / f.factor; return *this; }
+	template<int Ib, int Db> self& operator= (const fixed_point<Ia,Da>& f) { v = recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
 
-	self operator+ (const self& r) const { return self(v + r.v, factor); }
-	self operator- (const self& r) const { return self(v - r.v, factor); }
-	self operator* (const self& r) const { return self(v * r.v / factor, factor); }
-	self operator/ (const self& r) const { return self(v * factor / r.v, factor); }
-
-	template<typename R> self& operator+= (R r) { v += r*factor; return *this; }
-	template<typename R> self& operator-= (R r) { v -= r*factor; return *this; }
+	template<typename R> self& operator+= (R r) { v += r * (value_type)factor; return *this; }
+	template<typename R> self& operator-= (R r) { v -= r * (value_type)factor; return *this; }
 	template<typename R> self& operator*= (R r) { v *= r; return *this; }
 	template<typename R> self& operator/= (R r) { v /= r; return *this; }
 
-	template<typename R, int S> self& operator+= (const fixed_point<R,S>& f) { v += (f.v * factor / f.factor); return *this; }
-	template<typename R, int S> self& operator-= (const fixed_point<R,S>& f) { v -= (f.v * factor / f.factor); return *this; }
-	template<typename R, int S> self& operator*= (const fixed_point<R,S>& f) { v = (v * f.v / f.factor); return *this; }
-	template<typename R, int S> self& operator/= (const fixed_point<R,S>& f) { v = (v * f.factor / f.v); return *this; }
-
-	self& operator+= (const self& r) { v += r.v; return *this; }
-	self& operator-= (const self& r) { v -= r.v; return *this; }
-	self& operator*= (const self& r) { v = v * r.v / factor; return *this; }
-	self& operator/= (const self& r) { v = v * factor / r.v; return *this; }
+	template<int Ib, int Db> self& operator+= (fixed_point<Ib,Db>& f) { v += recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
+	template<int Ib, int Db> self& operator-= (fixed_point<Ib,Db>& f) { v -= recast(Ib+Db+Da, f.v) * factor / f.factor; return *this; }
+	template<int Ib, int Db> self& operator*= (fixed_point<Ib,Db>& f) { v = recast(Ia+Da+Ib+Db, v) * f.v / f.factor; return *this; }
+	template<int Ib, int Db> self& operator/= (fixed_point<Ib,Db>& f) { v = recast(Ia+Da+Db, v) * f.factor / f.v; return *this; }
 
 	template<typename R> operator R() const { return (R)v / factor; }
-	template<typename R, int S> operator fixed_point<R,S>() const { return fixed_point<R,S>(v * fixed_point<R,S>::factor / factor); }
+	template<int Ib, int Db> operator fixed_point<Ib,Db>() const { fixed_point<Ib,Db> r; r.v = recast(Ia+Da+Db, v) * r.factor / factor; return r; }
 
-	self round() const { return self((v & ~decimal_mask) + ((v & decimal_mask) >= factor/2 ? factor : 0) & ~decimal_mask, factor); }
-	self floor() const { return self((v & ~decimal_mask), factor); }
-	self ceil() const { return self((v & ~decimal_mask) + ((v & decimal_mask) > 0 ? factor : 0) & ~decimal_mask, factor); }
+	self round() const { self r; r.v = (v & ~decimal_mask); if ((v & decimal_mask) >= factor/2) r.v += factor; return r; }
+	self floor() const { self r; r.v = (v & ~decimal_mask); return r; }
+	self ceil()  const { self r; r.v = (v & ~decimal_mask); if ((v & decimal_mask) > 0) r.v += factor; return r; }
 };
 
-template<typename R, typename S, int T> fixed_point<S,T> operator+ (R r, const fixed_point<S,T>& f) { return fixed_point<S,T>((S)(r*f.factor + f.v), f.factor); }
-template<typename R, typename S, int T> fixed_point<S,T> operator- (R r, const fixed_point<S,T>& f) { return fixed_point<S,T>((S)(r*f.factor - f.v), f.factor); }
-template<typename R, typename S, int T> fixed_point<S,T> operator* (R r, const fixed_point<S,T>& f) { return fixed_point<S,T>((S)(r * f.v), f.factor); }
-template<typename R, typename S, int T> fixed_point<S,T> operator/ (R r, const fixed_point<S,T>& f) { return fixed_point<S,T>((S)(r * f.factor * f.factor / f.v), f.factor); }
+#define return_wrapped(value) fixed_point<Ia,Da> _r; _r.v = (value); return _r;
 
-template<typename R, typename S, int T> fixed_point<S,T> operator+ (const fixed_point<S,T>& f, R r) { return fixed_point<S,T>((S)(f.v + r*f.factor), f.factor); }
-template<typename R, typename S, int T> fixed_point<S,T> operator- (const fixed_point<S,T>& f, R r) { return fixed_point<S,T>((S)(f.v - r*f.factor), f.factor); }
-template<typename R, typename S, int T> fixed_point<S,T> operator* (const fixed_point<S,T>& f, R r) { return fixed_point<S,T>((S)(f.v * r), f.factor); }
-template<typename R, typename S, int T> fixed_point<S,T> operator/ (const fixed_point<S,T>& f, R r) { return fixed_point<S,T>((S)(f.v / r), f.factor); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator+ (R r, fixed_point<Ia,Da> f) { return_wrapped(r * recast(Ia+Da+Da, f.factor) + f.v); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator- (R r, fixed_point<Ia,Da> f) { return_wrapped(r * recast(Ia+Da+Da, f.factor) - f.v); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator* (R r, fixed_point<Ia,Da> f) { return_wrapped(r * f.v); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator/ (R r, fixed_point<Ia,Da> f) { return_wrapped(r * recast(Ia+Da+Da+Da, f.factor) * f.factor / f.v); }
 
-template<typename R, int S, typename T, int U> fixed_point<T,U> operator+ (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return fixed_point<T,U>(a.v + (b.v * a.factor / b.factor), a.factor); }
-template<typename R, int S, typename T, int U> fixed_point<T,U> operator- (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return fixed_point<T,U>(a.v - (b.v * a.factor / b.factor), a.factor); }
-template<typename R, int S, typename T, int U> fixed_point<T,U> operator* (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return fixed_point<T,U>((T)(a.v * b.v / b.factor), a.factor); }
-template<typename R, int S, typename T, int U> fixed_point<T,U> operator/ (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return fixed_point<T,U>((T)(a.v * b.factor / b.v), a.factor); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator+ (fixed_point<Ia,Da> f, R r) { return_wrapped(f.v + r * recast(Ia+Da+Da, f.factor)); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator- (fixed_point<Ia,Da> f, R r) { return_wrapped(f.v - r * recast(Ia+Da+Da, f.factor)); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator* (fixed_point<Ia,Da> f, R r) { return_wrapped(f.v * r); }
+template<typename R, int Ia, int Da> fixed_point<Ia,Da> operator/ (fixed_point<Ia,Da> f, R r) { return_wrapped(f.v / r); }
 
-template<typename R, int S, typename T, int U> bool operator> (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return a.v*b.factor > b.v*a.factor; }
-template<typename R, int S, typename T, int U> bool operator< (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return a.v*b.factor < b.v*a.factor; }
-template<typename R, int S, typename T, int U> bool operator>= (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return a.v*b.factor >= b.v*a.factor; }
-template<typename R, int S, typename T, int U> bool operator<= (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return a.v*b.factor <= b.v*a.factor; }
-template<typename R, int S, typename T, int U> bool operator== (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return a.v*b.factor == b.v*a.factor; }
-template<typename R, int S, typename T, int U> bool operator!= (const fixed_point<R,S>& a, const fixed_point<T,U>& b) { return a.v*b.factor != b.v*a.factor; }
+template<int Ia, int Da, int Ib, int Db> fixed_point<Ia,Da> operator+ (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return_wrapped(a.v + (recast(Ib+Db+Da, b.v) * a.factor / b.factor)); }
+template<int Ia, int Da, int Ib, int Db> fixed_point<Ia,Da> operator- (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return_wrapped(a.v - (recast(Ib+Db+Da, b.v) * a.factor / b.factor)); }
+template<int Ia, int Da, int Ib, int Db> fixed_point<Ia,Da> operator* (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return_wrapped(recast(Ia+Da+Ib+Db, a.v) * b.v / b.factor); }
+template<int Ia, int Da, int Ib, int Db> fixed_point<Ia,Da> operator/ (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return_wrapped(recast(Ia+Da+Db, a.v) * b.factor / b.v); }
 
-template<typename R, typename S, int T> bool operator> (R r, const fixed_point<S,T>& f) { return r*f.factor > f.v; }
-template<typename R, typename S, int T> bool operator< (R r, const fixed_point<S,T>& f) { return r*f.factor < f.v; }
-template<typename R, typename S, int T> bool operator>= (R r, const fixed_point<S,T>& f) { return r*f.factor >= f.v; }
-template<typename R, typename S, int T> bool operator<= (R r, const fixed_point<S,T>& f) { return r*f.factor <= f.v; }
-template<typename R, typename S, int T> bool operator== (R r, const fixed_point<S,T>& f) { return r*f.factor == f.v; }
-template<typename R, typename S, int T> bool operator!= (R r, const fixed_point<S,T>& f) { return r*f.factor != f.v; }
+template<int Ia, int Da, int Ib, int Db> bool operator>  (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return recast(Ia+Da+Db, a.v) * b.factor >  recast(Ib+Db+Da, b.v) * a.factor; }
+template<int Ia, int Da, int Ib, int Db> bool operator<  (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return recast(Ia+Da+Db, a.v) * b.factor <  recast(Ib+Db+Da, b.v) * a.factor; }
+template<int Ia, int Da, int Ib, int Db> bool operator>= (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return recast(Ia+Da+Db, a.v) * b.factor >= recast(Ib+Db+Da, b.v) * a.factor; }
+template<int Ia, int Da, int Ib, int Db> bool operator<= (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return recast(Ia+Da+Db, a.v) * b.factor <= recast(Ib+Db+Da, b.v) * a.factor; }
+template<int Ia, int Da, int Ib, int Db> bool operator== (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return recast(Ia+Da+Db, a.v) * b.factor == recast(Ib+Db+Da, b.v) * a.factor; }
+template<int Ia, int Da, int Ib, int Db> bool operator!= (fixed_point<Ia,Da> a, fixed_point<Ib,Db> b) { return recast(Ia+Da+Db, a.v) * b.factor != recast(Ib+Db+Da, b.v) * a.factor; }
 
-template<typename R, typename S, int T> bool operator> (const fixed_point<S,T>& f, R r) { return r < f; }
-template<typename R, typename S, int T> bool operator< (const fixed_point<S,T>& f, R r) { return r > f; }
-template<typename R, typename S, int T> bool operator>= (const fixed_point<S,T>& f, R r) { return r <= f; }
-template<typename R, typename S, int T> bool operator<= (const fixed_point<S,T>& f, R r) { return r >= f; }
-template<typename R, typename S, int T> bool operator== (const fixed_point<S,T>& f, R r) { return r == f; }
-template<typename R, typename S, int T> bool operator!= (const fixed_point<S,T>& f, R r) { return r != f; }
+template<typename R, int Ia, int Da> bool operator>  (R r, fixed_point<Ia,Da> f) { return r * recast(Ia+Da+Da, f.factor) >  f.v; }
+template<typename R, int Ia, int Da> bool operator<  (R r, fixed_point<Ia,Da> f) { return r * recast(Ia+Da+Da, f.factor) <  f.v; }
+template<typename R, int Ia, int Da> bool operator>= (R r, fixed_point<Ia,Da> f) { return r * recast(Ia+Da+Da, f.factor) >= f.v; }
+template<typename R, int Ia, int Da> bool operator<= (R r, fixed_point<Ia,Da> f) { return r * recast(Ia+Da+Da, f.factor) <= f.v; }
+template<typename R, int Ia, int Da> bool operator== (R r, fixed_point<Ia,Da> f) { return r * recast(Ia+Da+Da, f.factor) == f.v; }
+template<typename R, int Ia, int Da> bool operator!= (R r, fixed_point<Ia,Da> f) { return r * recast(Ia+Da+Da, f.factor) != f.v; }
+
+template<typename R, int Ia, int Da> bool operator>  (fixed_point<Ia,Da> f, R r) { return f.v >  r * recast(Ia+Da+Da, f.factor); }
+template<typename R, int Ia, int Da> bool operator<  (fixed_point<Ia,Da> f, R r) { return f.v <  r * recast(Ia+Da+Da, f.factor); }
+template<typename R, int Ia, int Da> bool operator>= (fixed_point<Ia,Da> f, R r) { return f.v >= r * recast(Ia+Da+Da, f.factor); }
+template<typename R, int Ia, int Da> bool operator<= (fixed_point<Ia,Da> f, R r) { return f.v <= r * recast(Ia+Da+Da, f.factor); }
+template<typename R, int Ia, int Da> bool operator== (fixed_point<Ia,Da> f, R r) { return f.v == r * recast(Ia+Da+Da, f.factor); }
+template<typename R, int Ia, int Da> bool operator!= (fixed_point<Ia,Da> f, R r) { return f.v != r * recast(Ia+Da+Da, f.factor); }
+
+#undef recast
 
 } // namespace gamma

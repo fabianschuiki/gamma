@@ -99,10 +99,38 @@ BOOST_AUTO_TEST_CASE(matrix_column_major)
  * storage by multiplying two large numbers. */
 BOOST_AUTO_TEST_CASE(fixed_point_overflow)
 {
-	gamma::fixed_point<int, 8> fp0, fp1;
-	fp0.v = 0x00008000;
-	fp1.v = 0x00010000;
+	gamma::fixed_point<24,8> a0, a1, a2;
+	a0.v = 0x00008000;
+	a1.v = 0x00010000;
+	a2.v = 0x0007ff00;
 
-	BOOST_CHECK_EQUAL((int)(fp0*fp0), 0x80*0x80);
-	BOOST_CHECK_EQUAL((int)(fp1*fp1), 0x100*0x100);
+	BOOST_CHECK_EQUAL((a0*a0).v, 0x80*0x80 * 0x100);
+	BOOST_CHECK_EQUAL((a1*a1).v, 0x100*0x100 * 0x100);
+	BOOST_CHECK_EQUAL((a2*a2).v, 0x7ff*0x7ff * 0x100);
+
+	BOOST_CHECK_EQUAL((int)a0, 0x80);
+	BOOST_CHECK_EQUAL((int)a1, 0x100);
+	BOOST_CHECK_EQUAL((int)a2, 0x7ff);
+}
+
+BOOST_AUTO_TEST_CASE(fixed_point_rounding)
+{
+	gamma::fixed_point<24,8> a0(0x200,8), a1(0x199,8), a2(0x201,8), b0(0x180,8), b1(0x17f,8), b2(0x181,8);
+
+	BOOST_REQUIRE(a0.v == 0x200);
+	BOOST_REQUIRE(a1.v == 0x199);
+	BOOST_REQUIRE(a2.v == 0x201);
+
+	BOOST_REQUIRE(b0.v == 0x180);
+	BOOST_REQUIRE(b1.v == 0x17f);
+	BOOST_REQUIRE(b2.v == 0x181);
+
+	BOOST_CHECK_EQUAL(a0.floor().v, 0x200); BOOST_CHECK_EQUAL(a1.floor().v, 0x100);	BOOST_CHECK_EQUAL(a2.floor().v, 0x200);
+	BOOST_CHECK_EQUAL(b0.floor().v, 0x100); BOOST_CHECK_EQUAL(b1.floor().v, 0x100);	BOOST_CHECK_EQUAL(b2.floor().v, 0x100);
+
+	BOOST_CHECK_EQUAL(a0.round().v, 0x200); BOOST_CHECK_EQUAL(a1.round().v, 0x200);	BOOST_CHECK_EQUAL(a2.round().v, 0x200);
+	BOOST_CHECK_EQUAL(b0.round().v, 0x200); BOOST_CHECK_EQUAL(b1.round().v, 0x100);	BOOST_CHECK_EQUAL(b2.round().v, 0x200);
+
+	BOOST_CHECK_EQUAL(a0.ceil().v, 0x200); BOOST_CHECK_EQUAL(a1.ceil().v, 0x200);	BOOST_CHECK_EQUAL(a2.ceil().v, 0x300);
+	BOOST_CHECK_EQUAL(b0.ceil().v, 0x200); BOOST_CHECK_EQUAL(b1.ceil().v, 0x200);	BOOST_CHECK_EQUAL(b2.ceil().v, 0x200);
 }
