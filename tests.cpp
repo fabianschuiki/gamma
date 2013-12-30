@@ -4,6 +4,11 @@
 #include <gamma/vector.hpp>
 #include <gamma/matrix.hpp>
 #include <gamma/fixed_point.hpp>
+#include <gamma/transform/translation.hpp>
+#include <gamma/transform/x_rotation.hpp>
+#include <gamma/transform/y_rotation.hpp>
+#include <gamma/transform/z_rotation.hpp>
+#include <gamma/transform/axial_rotation.hpp>
 #include <boost/test/unit_test.hpp>
 
 using namespace gamma::convenience;

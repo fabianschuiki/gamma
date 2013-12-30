@@ -1,6 +1,8 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "matrix.hpp"
+#include "../vector.hpp"
+#include "../matrix.hpp"
+#define GAMMA_HAS_TRANSFORM_TRANSLATION
 
 namespace gamma {
 namespace transform {
@@ -16,20 +18,19 @@ template <typename T> struct translation
 	matrix_type m; // output
 
 	translation() {}
-	template <typename R> translation(const R& a): v(a) {}
+	translation(const vector_type& a): v(a) {}
 
-	template <typename R> self& operator+= (const translation<R>& a) { v += a.v; return *this; }
-	template <typename R> self& operator-= (const translation<R>& a) { v -= a.v; return *this; }
-	template <typename R> self& operator+= (const vector3<R>& a) { v += a; return *this; }
-	template <typename R> self& operator-= (const vector3<R>& a) { v -= a; return *this; }
+	self& operator+= (const vector_type& a) { v += a; return *this; }
+	self& operator-= (const vector_type& a) { v -= a; return *this; }
+	self& operator*= (const vector_type& a) { v *= a; return *this; }
+	self& operator/= (const vector_type& a) { v /= a; return *this; }
 	self& reset() { v = vector_type(); return *this; }
 
-	template <typename R> self operator+ (const translation<R>& a) { return self(v + a.v); }
-	template <typename R> self operator- (const translation<R>& a) { return self(v - a.v); }
-	template <typename R> self operator+ (const vector3<R>& a) { return self(v + a); }
-	template <typename R> self operator- (const vector3<R>& a) { return self(v - a); }
+	self operator+ (const vector_type& a) { return self(v + a); }
+	self operator- (const vector_type& a) { return self(v - a); }
+	self operator* (const vector_type& a) { return self(v * a); }
+	self operator/ (const vector_type& a) { return self(v / a); }
 
-	operator vector_type() const { return v; }
 	operator matrix_type() const { return m; }
 
 	self& update()
