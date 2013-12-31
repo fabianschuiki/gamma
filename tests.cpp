@@ -9,6 +9,10 @@
 #include <gamma/transform/y_rotation.hpp>
 #include <gamma/transform/z_rotation.hpp>
 #include <gamma/transform/axial_rotation.hpp>
+#include <gamma/transform/perspective.hpp>
+#include <gamma/transform/orientation.hpp>
+#include <gamma/transform/lookat.hpp>
+#include <gamma/mvp.hpp>
 #include <boost/test/unit_test.hpp>
 
 using namespace gamma::convenience;

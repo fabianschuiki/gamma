@@ -1,6 +1,7 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
 #include "vector.hpp"
+#define GAMMA_HAS_MATRIX
 
 namespace gamma {
 
@@ -29,6 +30,7 @@ template <typename T> struct matrix2
 	template<typename R> explicit matrix2(const matrix2<R>& h) : m00(h.m00), m10(h.m10), m01(h.m01), m11(h.m11) {}
 
 	template<typename R> operator matrix2<R>() const { return matrix2<R>(*this); }
+	operator T*() const { return (T*)this; }
 	T& operator() (int row, int column) { return a[column][row]; }
 	T operator() (int row, int column) const { return a[column][row]; }
 	column operator() (int column) const { return column(a[column][0], a[column][1]); }
@@ -54,7 +56,7 @@ template <typename T> struct matrix2
 
 template<typename T, typename R> matrix2<T> operator+ (const matrix2<T>& v, const matrix2<R>& h) { return matrix2<T>(v.m00+h.m00, v.m01+h.m01, v.m10+h.m10, v.m11+h.m11); }
 template<typename T, typename R> matrix2<T> operator- (const matrix2<T>& v, const matrix2<R>& h) { return matrix2<T>(v.m00-h.m00, v.m01-h.m01, v.m10-h.m10, v.m11-h.m11); }
-template<typename T, typename R> matrix2<T> operator* (const matrix2<T>& v, const matrix2<R>& h) { return self(
+template<typename T, typename R> matrix2<T> operator* (const matrix2<T>& v, const matrix2<R>& h) { return matrix2<T>(
 	v.m00*h.m01 + v.m01*h.m11, // m01
 	v.m00*h.m00 + v.m01*h.m10, // m00
 
@@ -112,6 +114,7 @@ template <typename T> struct matrix3
 		m20(h.m20), m21(h.m21), m22(h.m22) {}
 
 	template<typename R> operator matrix3<R>() const { return matrix3<R>(*this); }
+	operator T*() const { return (T*)this; }
 	T& operator() (int row, int column) { return a[column][row]; }
 	T operator() (int row, int column) const { return a[column][row]; }
 	column operator() (int column) const { return column(a[column][0], a[column][1], a[column][2]); }
@@ -188,7 +191,7 @@ template<typename T, typename R> matrix3<T> operator- (const matrix3<T>& v, cons
 	v.m00-h.m00, v.m01-h.m01, v.m02-h.m02,
 	v.m10-h.m10, v.m11-h.m11, v.m12-h.m12,
 	v.m20-h.m20, v.m21-h.m21, v.m22-h.m22); }
-template<typename T, typename R> matrix3<T> operator* (const matrix3<T>& v, const matrix3<R>& h) { return self(
+template<typename T, typename R> matrix3<T> operator* (const matrix3<T>& v, const matrix3<R>& h) { return matrix3<T>(
 	v.m00*h.m00 + v.m01*h.m10 + v.m02*h.m20, // m00
 	v.m00*h.m01 + v.m01*h.m11 + v.m02*h.m21, // m01
 	v.m00*h.m02 + v.m01*h.m12 + v.m02*h.m22, // m02
@@ -282,6 +285,7 @@ template <typename T> struct matrix4
 		m30(h.m30), m31(h.m31), m32(h.m32), m33(h.m33) {}
 
 	template<typename R> operator matrix4<R>() const { return matrix4<R>(*this); }
+	operator T*() const { return (T*)this; }
 	T& operator() (int row, int column) { return a[column][row]; }
 	T operator() (int row, int column) const { return a[column][row]; }
 	column operator() (int column) const { return column(a[column][0], a[column][1], a[column][2], a[column][3]); }
@@ -372,7 +376,7 @@ template<typename T, typename R> matrix4<T> operator- (const matrix4<T>& v, cons
 	v.m10-h.m10, v.m11-h.m11, v.m12-h.m12, v.m13-h.m13,
 	v.m20-h.m20, v.m21-h.m21, v.m22-h.m22, v.m23-h.m23,
 	v.m30-h.m30, v.m31-h.m31, v.m32-h.m32, v.m33-h.m33); }
-template<typename T, typename R> matrix4<T> operator* (const matrix4<T>& v, const matrix4<R>& h) { return self(
+template<typename T, typename R> matrix4<T> operator* (const matrix4<T>& v, const matrix4<R>& h) { return matrix4<T>(
 	v.m00*h.m00 + v.m01*h.m10 + v.m02*h.m20 + v.m03*h.m30, // m00
 	v.m00*h.m01 + v.m01*h.m11 + v.m02*h.m21 + v.m03*h.m31, // m01
 	v.m00*h.m02 + v.m01*h.m12 + v.m02*h.m22 + v.m03*h.m32, // m02
@@ -455,7 +459,7 @@ namespace convenience {
 	typedef matrix2<float> matrix2f;
 	typedef matrix3<float> matrix3f;
 	typedef matrix4<float> matrix4f;
-	
+
 	typedef matrix2<double> matrix2d;
 	typedef matrix3<double> matrix3d;
 	typedef matrix4<double> matrix4d;

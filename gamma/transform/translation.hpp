@@ -11,38 +11,31 @@ namespace transform {
 template <typename T> struct translation
 {
 	typedef translation<T> self;
+	typedef T scalar_type;
 	typedef vector3<T> vector_type;
 	typedef matrix4<T> matrix_type;
 
-	vector_type v; // input
-	matrix_type m; // output
+	const vector_type v;
 
-	translation() {}
-	translation(const vector_type& a): v(a) {}
-
-	self& operator+= (const vector_type& a) { v += a; return *this; }
-	self& operator-= (const vector_type& a) { v -= a; return *this; }
-	self& operator*= (const vector_type& a) { v *= a; return *this; }
-	self& operator/= (const vector_type& a) { v /= a; return *this; }
-	self& reset() { v = vector_type(); return *this; }
-
-	self operator+ (const vector_type& a) { return self(v + a); }
-	self operator- (const vector_type& a) { return self(v - a); }
-	self operator* (const vector_type& a) { return self(v * a); }
-	self operator/ (const vector_type& a) { return self(v / a); }
+	translation(): m(1) {}
+	translation(const vector_type& v): v(v)
+	{
+		m = matrix_type(
+			1,  0,  0,  v.x,
+			0,  1,  0,  v.y,
+			0,  0,  1,  v.z,
+			0,  0,  0,    1
+		);
+	}
 
 	operator matrix_type() const { return m; }
 
-	self& update()
-	{
-		m = matrix_type(
-			1, 0, 0, v.x,
-			0, 1, 0, v.y,
-			0, 0, 1, v.z,
-			0, 0, 0, 1);
-		return *this;
-	}
+private:
+	matrix_type m;
 };
+
+typedef translation<float>  translationf;
+typedef translation<double> translationd;
 
 } // namespace transform
 } // namespace gamma
