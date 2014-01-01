@@ -8,6 +8,7 @@
 
 #include "transform/orientation.hpp"
 #include "transform/perspective.hpp"
+#include "transform/orthogonal.hpp"
 
 #include "transform/axial_rotation.hpp"
 #include "transform/lookat.hpp"
