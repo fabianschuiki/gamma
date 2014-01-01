@@ -26,10 +26,12 @@ template <typename T> struct mvp
 	mvp(const matrix4_type& model, const matrix4_type& view, const matrix4_type& projection): model(model), view(view), projection(projection),
 		model_view(view*model),
 		model_view_projection(projection*model_view),
+		#define m model_view
 		normal(
-			model_view.m00, model_view.m01, model_view.m02,
-			model_view.m10, model_view.m11, model_view.m12,
-			model_view.m20, model_view.m21, model_view.m22) {}
+			m.m11*m.m22-m.m21*m.m12, m.m20*m.m12-m.m10*m.m22, m.m10*m.m21-m.m20*m.m11,
+			m.m21*m.m02-m.m01*m.m22, m.m00*m.m22-m.m20*m.m02, m.m20*m.m01-m.m00*m.m21,
+			m.m01*m.m12-m.m11*m.m02, m.m10*m.m02-m.m00*m.m12, m.m00*m.m11-m.m10*m.m01) {}
+		#undef m
 
 	mvp set            (const matrix4_type& m, const matrix4_type& v, const matrix4_type& p) const { return mvp(m, v, p); }
 	mvp set_model      (const matrix4_type& m) const { return mvp(m, view, projection); }
