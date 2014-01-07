@@ -5,6 +5,8 @@
 
 namespace gamma {
 
+#define cmplt(a,b) if (a < b) return true; if (a > b) return false;
+
 /// Two-dimensional vector.
 template<typename T> struct vector2
 {
@@ -64,6 +66,13 @@ template<typename T, typename R> vector2<T> operator+ (const vector2<T>& v, R h)
 template<typename T, typename R> vector2<T> operator- (const vector2<T>& v, R h) { return vector2<T>(v.x-h, v.y-h); }
 template<typename T, typename R> vector2<T> operator* (const vector2<T>& v, R h) { return vector2<T>(v.x*h, v.y*h); }
 template<typename T, typename R> vector2<T> operator/ (const vector2<T>& v, R h) { return vector2<T>(v.x/h, v.y/h); }
+
+template<typename T, typename R> bool operator< (const vector2<T>& a, const vector2<R>& b) { cmplt(a.x,b.x); cmplt(a.y,b.y); return false; }
+template<typename T, typename R> bool operator> (const vector2<T>& a, const vector2<R>& b) { cmplt(b.x,a.x); cmplt(b.y,a.y); return false; }
+template<typename T, typename R> bool operator== (const vector2<T>& a, const vector2<R>& b) { return a.x == b.x && a.y == b.y; }
+template<typename T, typename R> bool operator!= (const vector2<T>& a, const vector2<R>& b) { return a.x != b.x && a.y != b.y; }
+template<typename T, typename R> bool operator<= (const vector2<T>& a, const vector2<R>& b) { return a < b || a == b; }
+template<typename T, typename R> bool operator>= (const vector2<T>& a, const vector2<R>& b) { return a > b || a == b; }
 
 
 /// Three-dimensional vector.
@@ -127,6 +136,13 @@ template<typename T, typename R> vector3<T> operator- (const vector3<T>& v, R h)
 template<typename T, typename R> vector3<T> operator* (const vector3<T>& v, R h) { return vector3<T>(v.x*h, v.y*h, v.z*h); }
 template<typename T, typename R> vector3<T> operator/ (const vector3<T>& v, R h) { return vector3<T>(v.x/h, v.y/h, v.z/h); }
 
+template<typename T, typename R> bool operator< (const vector3<T>& a, const vector3<R>& b) { cmplt(a.x,b.x); cmplt(a.y,b.y); cmplt(a.z,b.z); return false; }
+template<typename T, typename R> bool operator> (const vector3<T>& a, const vector3<R>& b) { cmplt(b.x,a.x); cmplt(b.y,a.y); cmplt(b.z,a.z); return false; }
+template<typename T, typename R> bool operator== (const vector3<T>& a, const vector3<R>& b) { return a.x == b.x && a.y == b.y && a.z == b.z; }
+template<typename T, typename R> bool operator!= (const vector3<T>& a, const vector3<R>& b) { return a.x != b.x && a.y != b.y && a.z != b.z; }
+template<typename T, typename R> bool operator<= (const vector3<T>& a, const vector3<R>& b) { return a < b || a == b; }
+template<typename T, typename R> bool operator>= (const vector3<T>& a, const vector3<R>& b) { return a > b || a == b; }
+
 
 /// Four-dimensional vector.
 template<typename T> struct vector4
@@ -188,6 +204,13 @@ template<typename T, typename R> vector4<T> operator+ (const vector4<T>& v, R h)
 template<typename T, typename R> vector4<T> operator- (const vector4<T>& v, R h) { return vector4<T>(v.x-h, v.y-h, v.z-h, v.w-h); }
 template<typename T, typename R> vector4<T> operator* (const vector4<T>& v, R h) { return vector4<T>(v.x*h, v.y*h, v.z*h, v.w*h); }
 template<typename T, typename R> vector4<T> operator/ (const vector4<T>& v, R h) { return vector4<T>(v.x/h, v.y/h, v.z/h, v.w/h); }
+
+template<typename T, typename R> bool operator< (const vector4<T>& a, const vector4<R>& b) { cmplt(a.x,b.x); cmplt(a.y,b.y); cmplt(a.z,b.z); cmplt(a.w,b.w); return false; }
+template<typename T, typename R> bool operator> (const vector4<T>& a, const vector4<R>& b) { cmplt(b.x,a.x); cmplt(b.y,a.y); cmplt(b.z,a.z); cmplt(b.w,a.w); return false; }
+template<typename T, typename R> bool operator== (const vector4<T>& a, const vector4<R>& b) { return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w; }
+template<typename T, typename R> bool operator!= (const vector4<T>& a, const vector4<R>& b) { return a.x != b.x && a.y != b.y && a.z != b.z && a.w != b.w; }
+template<typename T, typename R> bool operator<= (const vector4<T>& a, const vector4<R>& b) { return a < b || a == b; }
+template<typename T, typename R> bool operator>= (const vector4<T>& a, const vector4<R>& b) { return a > b || a == b; }
 
 
 namespace convenience {
