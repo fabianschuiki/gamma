@@ -11,13 +11,13 @@ template <typename T> struct mvp
 	typedef matrix3<T> matrix3_type;
 	typedef matrix4<T> matrix4_type;
 
-	const matrix4_type model;
-	const matrix4_type view;
-	const matrix4_type projection;
+	matrix4_type model;
+	matrix4_type view;
+	matrix4_type projection;
 
-	const matrix4_type model_view;
-	const matrix4_type model_view_projection;
-	const matrix3_type normal;
+	matrix4_type model_view;
+	matrix4_type model_view_projection;
+	matrix3_type normal;
 
 	mvp(): model(1), view(1), projection(1),
 		model_view(1),
