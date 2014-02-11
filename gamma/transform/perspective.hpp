@@ -26,13 +26,13 @@ template <typename T> struct perspective
 	{
 		T f = tan(M_PI_2 - fov/2); // cot(x) = tan(pi/2 - x)
 		T g = f/aspect;
-		T a = near+far;
-		T b = near-far;
+		T a = far+near;
+		T b = far-near;
 		T c = 2*near*far;
 		m = matrix_type(
 			g,  0,    0,    0,
 			0,  f,    0,    0,
-			0,  0,  a/b,  c/b,
+			0,  0, -a/b, -c/b,
 			0,  0,   -1,    0
 		);
 	}
