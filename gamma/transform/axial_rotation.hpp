@@ -1,15 +1,15 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "x_rotation.hpp"
-#include "y_rotation.hpp"
-#include "z_rotation.hpp"
+#include "gamma/transform/x_rotation.hpp"
+#include "gamma/transform/y_rotation.hpp"
+#include "gamma/transform/z_rotation.hpp"
 
-namespace gamma {
+namespace gma {
 namespace transform {
 
-/** A rotation transformation about the x, y and z axis. This is a composite
- * transformation using three separate transforms for x, y and z underneath.
- * The individual rotation axis are accessible as mx, my and mz. */
+/// A rotation transformation about the x, y and z axis. This is a composite
+/// transformation using three separate transforms for x, y and z underneath.
+/// The individual rotation axis are accessible as mx, my and mz.
 template <typename T> struct axial_rotation
 {
 	typedef axial_rotation<T> self;
@@ -49,4 +49,4 @@ template <typename T> struct axial_rotation
 };
 
 } // namespace transform
-} // namespace gamma
+} // namespace gma

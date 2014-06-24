@@ -1,21 +1,23 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "../math.hpp"
-#include "../vector.hpp"
-#include "../matrix.hpp"
+#include "gamma/math.hpp"
+#include "gamma/vector.hpp"
+#include "gamma/matrix.hpp"
 #define GAMMA_HAS_TRANSFORM_Z_ROTATION
 
-namespace gamma {
+namespace gma {
 namespace transform {
 
-/** A rotation about the z axis. */
+/// A rotation about the z axis.
 template <typename T> struct z_rotation
 {
 	typedef z_rotation<T> self;
 	typedef T scalar_type;
 	typedef matrix4<T> matrix_type;
 
-	scalar_type z; // input
+	/// Input angle.
+	scalar_type z;
+	/// Output rotation matrix.
 	matrix_type m; // output
 
 	z_rotation() {}
@@ -46,4 +48,4 @@ template <typename T> struct z_rotation
 };
 
 } // namespace transform
-} // namespace gamma
+} // namespace gma

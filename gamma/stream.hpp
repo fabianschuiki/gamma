@@ -3,7 +3,7 @@
 #include <ostream>
 #define GAMMA_HAS_STREAM
 
-namespace gamma {
+namespace gma {
 
 #ifdef GAMMA_HAS_VECTOR
 template<typename T> std::ostream& operator<< (std::ostream& o, const vector2<T>& v) { o << v.x << ' ' << v.y; return o; }
@@ -41,4 +41,4 @@ template<typename T> std::ostream& operator<< (std::ostream& o, const line<T>& l
 template<int Ia, int Ib> std::ostream& operator<< (std::ostream& o, fixed_point<Ia,Ib> f) { o << (double)f.v / f.factor; return o; }
 #endif
 
-} // namespace gamma
+} // namespace gma

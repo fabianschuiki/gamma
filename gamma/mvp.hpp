@@ -1,8 +1,8 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "matrix.hpp"
+#include "gamma/matrix.hpp"
 
-namespace gamma {
+namespace gma {
 
 template <typename T> struct mvp
 {
@@ -19,19 +19,29 @@ template <typename T> struct mvp
 	matrix4_type model_view_projection;
 	matrix3_type normal;
 
-	mvp(): model(1), view(1), projection(1),
+	mvp():
+		model(1),
+		view(1),
+		projection(1),
 		model_view(1),
 		model_view_projection(1),
 		normal(1) {}
-	mvp(const matrix4_type& model, const matrix4_type& view, const matrix4_type& projection): model(model), view(view), projection(projection),
+	mvp(
+		const matrix4_type& model,
+		const matrix4_type& view,
+		const matrix4_type& projection):
+		model(model),
+		view(view),
+		projection(projection),
 		model_view(view*model),
 		model_view_projection(projection*model_view),
-		#define m model_view
 		normal(
+			#define m model_view
 			m.m11*m.m22-m.m21*m.m12, m.m20*m.m12-m.m10*m.m22, m.m10*m.m21-m.m20*m.m11,
 			m.m21*m.m02-m.m01*m.m22, m.m00*m.m22-m.m20*m.m02, m.m20*m.m01-m.m00*m.m21,
-			m.m01*m.m12-m.m11*m.m02, m.m10*m.m02-m.m00*m.m12, m.m00*m.m11-m.m10*m.m01) {}
-		#undef m
+			m.m01*m.m12-m.m11*m.m02, m.m10*m.m02-m.m00*m.m12, m.m00*m.m11-m.m10*m.m01
+			#undef m
+		) {}
 
 	mvp set            (const matrix4_type& m, const matrix4_type& v, const matrix4_type& p) const { return mvp(m, v, p); }
 	mvp set_model      (const matrix4_type& m) const { return mvp(m, view, projection); }
@@ -51,4 +61,4 @@ template <typename T> struct mvp
 typedef mvp<float>  mvpf;
 typedef mvp<double> mvpd;
 
-} // namespace gamma
+} // namespace gma

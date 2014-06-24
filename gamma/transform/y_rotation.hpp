@@ -1,14 +1,14 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "../math.hpp"
-#include "../vector.hpp"
-#include "../matrix.hpp"
+#include "gamma/math.hpp"
+#include "gamma/vector.hpp"
+#include "gamma/matrix.hpp"
 #define GAMMA_HAS_TRANSFORM_Y_ROTATION
 
-namespace gamma {
+namespace gma {
 namespace transform {
 
-/** A rotation about the y axis. */
+/// A rotation about the y axis.
 template <typename T> struct y_rotation
 {
 	typedef y_rotation<T> self;
@@ -46,4 +46,4 @@ template <typename T> struct y_rotation
 };
 
 } // namespace transform
-} // namespace gamma
+} // namespace gma

@@ -1,9 +1,9 @@
-/* Copyright © 2013 Fabian Schuiki */
+/* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "vector.hpp"
+#include "gamma/vector.hpp"
 #define GAMMA_HAS_LINE
 
-namespace gamma {
+namespace gma {
 
 /// A line in arbitrary dimensions, as defined by a point and a direection.
 template <typename T> struct line
@@ -35,4 +35,4 @@ namespace convenience {
 	typedef line<vector3d> line3d;
 	typedef line<vector4d> line4d;
 }
-} // namespace gamma
+} // namespace gma

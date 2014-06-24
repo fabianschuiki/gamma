@@ -1,9 +1,9 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "vector.hpp"
+#include "gamma/vector.hpp"
 #define GAMMA_HAS_MATRIX
 
-namespace gamma {
+namespace gma {
 
 #define matrix2_comp_comma(op, h) m00 op h.m00, m10 op h.m10, m01 op h.m01, m11 op h.m11
 #define matrix2_comp_semi(op, h) m00 op h.m00; m10 op h.m10; m01 op h.m01; m11 op h.m11
@@ -464,4 +464,4 @@ namespace convenience {
 	typedef matrix3<double> matrix3d;
 	typedef matrix4<double> matrix4d;
 }
-} // namespace gamma
+} // namespace gma

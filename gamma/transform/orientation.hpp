@@ -1,17 +1,17 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "../vector.hpp"
-#include "../matrix.hpp"
+#include "gamma/vector.hpp"
+#include "gamma/matrix.hpp"
 #define GAMMA_HAS_TRANSFORM_ORIENTATE
 
-namespace gamma {
+namespace gma {
 namespace transform {
 
-/** A rotation transformation that constructs a new subspace given two vectors.
- * The %target vector becomes the new Z component, and the X and Y are
- * constructed as a right-hand-system based on the cross products between
- * %target and %up. This transformation performs the rotation component of the
- * gluLookAt function. */
+/// A rotation transformation that constructs a new subspace given two vectors.
+/// The target vector becomes the new Z component, and the X and Y are
+/// constructed as a right-hand-system based on the cross products between
+/// target and up. This transformation performs the rotation component of the
+/// gluLookAt function.
 template <typename T> struct orientation
 {
 	typedef orientation<T> self;
@@ -23,8 +23,10 @@ template <typename T> struct orientation
 	const vector_type up;
 
 	orientation(): m(1) {}
-	orientation(const vector_type& target, const vector_type& up): target(target), up(up)
-	{
+	orientation(const vector_type& target, const vector_type& up):
+		target(target),
+		up(up) {
+
 		// construct the base vectors for the transformation
 		vector_type N = target.normalized();      // Z component of the new space
 		vector_type U = N.cross(up).normalized(); // X component of the new space
@@ -48,4 +50,4 @@ typedef orientation<float>  orientationf;
 typedef orientation<double> orientationd;
 
 } // namespace transform
-} // namespace gamma
+} // namespace gma

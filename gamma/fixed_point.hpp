@@ -1,14 +1,14 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "math.hpp"
-#include "integer.hpp"
+#include "gamma/math.hpp"
+#include "gamma/integer.hpp"
 #define GAMMA_HAS_FIXED_POINT
 
-namespace gamma {
+namespace gma {
 
 #define recast(bits,thing) ((typename integer::signed_integer<bits>::type)(thing))
 
-/** Class for signed fixed-point arithmetics. */
+/// Class for signed fixed-point arithmetics.
 template<int Ia, int Da> struct fixed_point
 {
 	typedef fixed_point<Ia,Da> self;
@@ -92,4 +92,4 @@ template<typename R, int Ia, int Da> bool operator!= (fixed_point<Ia,Da> f, R r)
 
 #undef recast
 
-} // namespace gamma
+} // namespace gma

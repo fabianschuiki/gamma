@@ -1,9 +1,9 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "math.hpp"
+#include "gamma/math.hpp"
 #define GAMMA_HAS_INTEGER
 
-namespace gamma {
+namespace gma {
 namespace integer {
 
 template <int N> struct signed_integer : public signed_integer<N+1> { const static int requested_bits = N; };
@@ -28,4 +28,4 @@ declare_unsigned_integer(uint64_t)
 #undef declare_unsigned_integer
 
 } // namespace integer
-} // namespace gamma
+} // namespace gma

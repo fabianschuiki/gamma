@@ -1,14 +1,14 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
 
-#include "transform/translation.hpp"
-#include "transform/x_rotation.hpp"
-#include "transform/y_rotation.hpp"
-#include "transform/z_rotation.hpp"
+#include "gamma/transform/translation.hpp"
+#include "gamma/transform/x_rotation.hpp"
+#include "gamma/transform/y_rotation.hpp"
+#include "gamma/transform/z_rotation.hpp"
 
-#include "transform/orientation.hpp"
-#include "transform/perspective.hpp"
-#include "transform/orthogonal.hpp"
+#include "gamma/transform/orientation.hpp"
+#include "gamma/transform/perspective.hpp"
+#include "gamma/transform/orthogonal.hpp"
 
-#include "transform/axial_rotation.hpp"
-#include "transform/lookat.hpp"
+#include "gamma/transform/axial_rotation.hpp"
+#include "gamma/transform/lookat.hpp"

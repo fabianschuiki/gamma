@@ -1,13 +1,13 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "../vector.hpp"
-#include "../matrix.hpp"
+#include "gamma/vector.hpp"
+#include "gamma/matrix.hpp"
 #define GAMMA_HAS_TRANSFORM_TRANSLATION
 
-namespace gamma {
+namespace gma {
 namespace transform {
 
-/** A translation transformation. */
+/// A translation transformation.
 template <typename T> struct translation
 {
 	typedef translation<T> self;
@@ -38,4 +38,4 @@ typedef translation<float>  translationf;
 typedef translation<double> translationd;
 
 } // namespace transform
-} // namespace gamma
+} // namespace gma

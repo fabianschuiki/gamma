@@ -1,28 +1,28 @@
 /* Copyright (c) 2013 Fabian Schuiki */
 #define BOOST_TEST_MODULE gamma
-#include <gamma/integer.hpp>
-#include <gamma/vector.hpp>
-#include <gamma/matrix.hpp>
-#include <gamma/fixed_point.hpp>
-#include <gamma/transform/translation.hpp>
-#include <gamma/transform/x_rotation.hpp>
-#include <gamma/transform/y_rotation.hpp>
-#include <gamma/transform/z_rotation.hpp>
-#include <gamma/transform/axial_rotation.hpp>
-#include <gamma/transform/perspective.hpp>
-#include <gamma/transform/orientation.hpp>
-#include <gamma/transform/lookat.hpp>
-#include <gamma/mvp.hpp>
+#include "gamma/integer.hpp"
+#include "gamma/vector.hpp"
+#include "gamma/matrix.hpp"
+#include "gamma/fixed_point.hpp"
+#include "gamma/transform/translation.hpp"
+#include "gamma/transform/x_rotation.hpp"
+#include "gamma/transform/y_rotation.hpp"
+#include "gamma/transform/z_rotation.hpp"
+#include "gamma/transform/axial_rotation.hpp"
+#include "gamma/transform/perspective.hpp"
+#include "gamma/transform/orientation.hpp"
+#include "gamma/transform/lookat.hpp"
+#include "gamma/mvp.hpp"
 #include <boost/test/unit_test.hpp>
 
-using namespace gamma::convenience;
+using namespace gma::convenience;
 
 BOOST_AUTO_TEST_CASE(integer)
 {
 	#define check(_type, _bits, _target)\
-		BOOST_CHECK_EQUAL((int)(gamma::integer::_type<_bits>::requested_bits), _bits);\
-		BOOST_CHECK_EQUAL((int)(gamma::integer::_type<_bits>::bits), _target*8);\
-		BOOST_CHECK_EQUAL(sizeof(gamma::integer::_type<_bits>::type), _target);
+		BOOST_CHECK_EQUAL((int)(gma::integer::_type<_bits>::requested_bits), _bits);\
+		BOOST_CHECK_EQUAL((int)(gma::integer::_type<_bits>::bits), _target*8);\
+		BOOST_CHECK_EQUAL(sizeof(gma::integer::_type<_bits>::type), _target);
 
 	#define check_pair(bits, target)\
 		check(signed_integer, bits, target);\
@@ -104,11 +104,11 @@ BOOST_AUTO_TEST_CASE(matrix_column_major)
 	#undef verify_column_major_matrices
 }
 
-/** This test tries to trigger an overflow of a fixed_point's underlying
- * storage by multiplying two large numbers. */
+/// This test tries to trigger an overflow of a fixed_point's underlying
+/// storage by multiplying two large numbers.
 BOOST_AUTO_TEST_CASE(fixed_point_overflow)
 {
-	gamma::fixed_point<24,8> a0, a1, a2;
+	gma::fixed_point<24,8> a0, a1, a2;
 	a0.v = 0x00008000;
 	a1.v = 0x00010000;
 	a2.v = 0x0007ff00;
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(fixed_point_overflow)
 
 BOOST_AUTO_TEST_CASE(fixed_point_rounding)
 {
-	gamma::fixed_point<24,8> a0(0x200,8), a1(0x199,8), a2(0x201,8), b0(0x180,8), b1(0x17f,8), b2(0x181,8);
+	gma::fixed_point<24,8> a0(0x200,8), a1(0x199,8), a2(0x201,8), b0(0x180,8), b1(0x17f,8), b2(0x181,8);
 
 	BOOST_REQUIRE(a0.v == 0x200);
 	BOOST_REQUIRE(a1.v == 0x199);

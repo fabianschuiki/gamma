@@ -1,9 +1,9 @@
-/* Copyright © 2013 Fabian Schuiki */
+/* Copyright (c) 2013 Fabian Schuiki */
 #pragma once
-#include "math.hpp"
+#include "gamma/math.hpp"
 #define GAMMA_HAS_VECTOR
 
-namespace gamma {
+namespace gma {
 
 #define cmplt(a,b) if (a < b) return true; if (a > b) return false;
 
@@ -230,4 +230,4 @@ namespace convenience {
 	typedef vector3<double> vector3d;
 	typedef vector4<double> vector4d;
 }
-} // namespace gamma
+} // namespace gma
