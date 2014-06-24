@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Fabian Schuiki */
+/* Copyright (c) 2013-2014 Fabian Schuiki */
 #pragma once
 #include "gamma/transform/x_rotation.hpp"
 #include "gamma/transform/y_rotation.hpp"

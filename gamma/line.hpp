@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Fabian Schuiki */
+/* Copyright (c) 2013-2014 Fabian Schuiki */
 #pragma once
 #include "gamma/vector.hpp"
 #define GAMMA_HAS_LINE

@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Fabian Schuiki */
+/* Copyright (c) 2013-2014 Fabian Schuiki */
 #define BOOST_TEST_MODULE gamma
 #include "gamma/integer.hpp"
 #include "gamma/vector.hpp"
